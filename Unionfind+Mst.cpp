@@ -6,11 +6,14 @@ private:
 	vector<ll>parent;
 	vector<ll>rank;
 public:
-	Unionfind(ll n) {
-		this->n = n;
+	void init() {
 		parent.resize(n + 1);
 		iota(parent.begin(), parent.end(), 0);
 		rank.assign(n + 1, 1);
+	}
+	Unionfind(ll n) {
+		this->n = n;
+		init();
 	}
 	ll getparent(ll x) {
 		if (x == parent[x]) {
@@ -35,7 +38,8 @@ public:
 			parent[a] = b;
 		}
 	}
-	ll minkruskal(priority_queue<lll, vector<lll>, greater<lll>>&pq) {
+	ll minkruskal(priority_queue<lll, vector<lll>, greater<lll>>& pq) {
+		init();
 		ll result = 0;
 		ll count = 0;
 		while (!pq.empty() && count < n - 1) {
@@ -49,7 +53,8 @@ public:
 		}
 		return (count == n - 1 ? result : LLONG_MAX);
 	}
-	ll maxkruskal(priority_queue<lll>&pq) {
+	ll maxkruskal(priority_queue<lll>& pq) {
+		init();
 		ll result = 0;
 		ll count = 0;
 		while (!pq.empty() && count < n - 1) {
@@ -62,5 +67,33 @@ public:
 			}
 		}
 		return (count == n - 1 ? result : LLONG_MAX);
+	}
+	bool hascycle(const vector<vector<ll>>& graph) {
+		init();
+		for (int i = 1; i <= n; i++) {
+			for (auto& j : graph[i]) {
+				if (i < j) {
+					if (getparent(i) == getparent(j)) {
+						return true;
+					}
+					merge(i, j);
+				}
+			}
+		}
+		return false;
+	}
+	bool hascycle(const vector<vector<pll>>& graph) {
+		init();
+		for (int i = 1; i <= n; i++) {
+			for (auto& j : graph[i]) {
+				if (i < j.first) {
+					if (getparent(i) == getparent(j.first)) {
+						return true;
+					}
+					merge(i, j.first);
+				}
+			}
+		}
+		return false;
 	}
 };

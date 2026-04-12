@@ -3,17 +3,15 @@ private:
 	using ll = long long;
 	using pll = pair<ll, ll>;
 	ll n;
-	vector<ll>start;
 	vector<vector<pll>>graph;
 public:
 	vector<ll>dist;
 	vector<vector<pll>>revgraph;
-	Dijkstra(ll n, vector<ll>start, vector<vector<pll>>&graph) {
+	Dijkstra(ll n, const vector<vector<pll>>& graph) {
 		this->n = n;
-		this->start = start;
 		this->graph = graph;
 	}
-	vector<ll> run() {
+	vector<ll> run(const vector<ll>& start) {
 		priority_queue<pll, vector<pll>, greater<pll>>pq;
 		dist.assign(n + 1, LLONG_MAX);
 		for (auto& i : start) {
@@ -34,7 +32,7 @@ public:
 		}
 		return dist;
 	}
-	pair<vector<ll>, vector<vector<pll>>> revrun() {
+	pair<vector<ll>, vector<vector<pll>>> revrun(const vector<ll>& start) {
 		priority_queue<pll, vector<pll>, greater<pll>>pq;
 		dist.assign(n + 1, LLONG_MAX);
 		revgraph.assign(n + 1, vector<pll>());
