@@ -7,10 +7,7 @@ private:
 public:
 	vector<ll>dist;
 	vector<vector<pll>>revgraph;
-	Dijkstra(ll n, const vector<vector<pll>>& graph) {
-		this->n = n;
-		this->graph = graph;
-	}
+	Dijkstra(ll n, const vector<vector<pll>>& graph) : n(n), graph(graph) {}
 	vector<ll> run(const vector<ll>& start) {
 		priority_queue<pll, vector<pll>, greater<pll>>pq;
 		dist.assign(n + 1, LLONG_MAX);
