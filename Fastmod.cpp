@@ -25,12 +25,19 @@ public:
 	ull addmod(ll a, ll b) {
 		return addmod_u(norm(a), norm(b));
 	}
-	//ull fastmulmod(ull a, ull b) {
-	//	return (ull)((unsigned __int128)a * b % mod);
-	//}
-	//ull fastmulmod(ll a, ll b) {
-	//	return fastmulmod(norm(a), norm(b));
-	//}
+	ull fastmulmod(ull a, ull b) {
+		long long result = a * b - mod * (ull)(1.L / mod * a * b);
+		if (result < 0) {
+			result += mod;
+		}
+		if ((ull)result >= mod) {
+			result -= mod;
+		}
+		return (ull)result;
+	}
+	ull fastmulmod(ll a, ll b) {
+		return fastmulmod(norm(a), norm(b));
+	}
 	ull mulmod(ull a, ull b) {
 		ull result = 0;
 		while (b) {
@@ -45,18 +52,18 @@ public:
 	ull mulmod(ll a, ll b) {
 		return mulmod(norm(a), norm(b));
 	}
-	//ull fastpowmod(ll a, ull b) {
-	//	ull x = norm(a);
-	//	ull result = 1;
-	//	while (b) {
-	//		if (b & 1) {
-	//			result = fastmulmod(result, x);
-	//		}
-	//		x = fastmulmod(x, x);
-	//		b >>= 1;
-	//	}
-	//	return result;
-	//}
+	ull fastpowmod(ll a, ull b) {
+		ull x = norm(a);
+		ull result = 1;
+		while (b) {
+			if (b & 1) {
+				result = fastmulmod(result, x);
+			}
+			x = fastmulmod(x, x);
+			b >>= 1;
+		}
+		return result;
+	}
 	ull powmod(ll a, ull b) {
 		ull x = norm(a);
 		ull result = 1;
