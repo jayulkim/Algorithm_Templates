@@ -16,9 +16,7 @@ private:
 		return a + b;
 	}
 public:
-	Fastmod(ull mod) {
-		this->mod = mod;
-	}
+	Fastmod(ull mod) : mod(mod) {}
 	ull addmod(ull a, ull b) {
 		return addmod_u(a, b);
 	}
@@ -75,6 +73,9 @@ public:
 			b >>= 1;
 		}
 		return result;
+	}
+	ull divmod(ll up, ll down) {
+		return fastmulmod(norm(up), fastpowmod(norm(down), mod - 2));
 	}
 };
 class Primecheck {
@@ -175,7 +176,7 @@ public:
 class Primefactor {
 private:
 	using ll = long long;
-	using ull = unsigned long long;   
+	using ull = unsigned long long;
 	using pull = pair<ull, ull>;
 	using pll = pair<ll, ll>;
 	Fastgcd fg;
