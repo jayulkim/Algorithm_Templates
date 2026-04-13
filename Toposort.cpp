@@ -4,10 +4,7 @@ private:
 	ll n;
 	vector<vector<ll>>dag;
 public:
-	Toposort(ll n, const vector<vector<ll>>& dag) {
-		this->n = n;
-		this->dag = dag;
-	}
+	Toposort(ll n, const vector<vector<ll>>& dag) : n(n), dag(dag) {}
 	pair<bool, vector<ll>> toposort() {
 		vector<ll>degree(n + 1, 0);
 		for (int i = 1; i <= n; i++) {
@@ -32,6 +29,6 @@ public:
 				}
 			}
 		}
-		return { result.size() == n, result};
+		return { result.size() == n, result };
 	}
 };
