@@ -1,6 +1,7 @@
 class Unionfind {
 private:
 	using ll = long long;
+	using pll = pair<ll, ll>;
 	using lll = tuple<ll, ll, ll>;
 	ll n;
 	vector<ll>parent;
@@ -11,8 +12,7 @@ public:
 		iota(parent.begin(), parent.end(), 0);
 		rank.assign(n + 1, 1);
 	}
-	Unionfind(ll n) {
-		this->n = n;
+	Unionfind(ll n) : n(n) {
 		init();
 	}
 	ll getparent(ll x) {
