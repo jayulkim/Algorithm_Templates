@@ -16,9 +16,7 @@ private:
 		return a + b;
 	}
 public:
-	Fastmod(ull mod) {
-		this->mod = mod;
-	}
+	Fastmod(ull mod) : mod(mod) {}
 	ull addmod(ull a, ull b) {
 		return addmod_u(a, b);
 	}
@@ -75,5 +73,8 @@ public:
 			b >>= 1;
 		}
 		return result;
+	}
+	ull divmod(ll up, ll down) {
+		return fastmulmod(norm(up), fastpowmod(norm(down), mod - 2));
 	}
 };
