@@ -78,6 +78,201 @@ public:
 		return fastmulmod(norm(up), fastpowmod(norm(down), mod - 2));
 	}
 };
+class Matrix {
+private:
+	using ll = long long;
+	using ull = unsigned long long;
+	using matrix = vector<vector<ll>>;
+	using matrix_u = vector<vector<ull>>;
+	ull mod;
+	Fastmod fm;
+public:
+	Matrix(ull mod) : mod(mod), fm(mod) {}
+	ll pow(ll a, ull b) {
+		ll result = 1;
+		while (b) {
+			if (b & 1) {
+				result *= a;
+			}
+			a *= a;
+			b >>= 1;
+		}
+		return result;
+	}
+	ull pow(ull a, ull b) {
+		ull result = 1;
+		while (b) {
+			if (b & 1) {
+				result *= a;
+			}
+			a *= a;
+			b >>= 1;
+		}
+		return result;
+	}
+	matrix addmod(const matrix& a, const matrix& b) {
+		ll n = a.size();
+		ll m = a[0].size();
+		if (n != (ll)b.size() || m != (ll)b[0].size()) {
+			return { {} };
+		}
+		matrix result = a;
+		for (ll i = 0; i < n; i++) {
+			for (ll j = 0; j < m; j++) {
+				result[i][j] = fm.addmod(result[i][j], b[i][j]);
+			}
+		}
+		return result;
+	}
+	matrix_u addmod(const matrix_u& a, const matrix_u& b) {
+		ll n = a.size();
+		ll m = a[0].size();
+		if (n != (ll)b.size() || m != (ll)b[0].size()) {
+			return { {} };
+		}
+		matrix_u result = a;
+		for (ll i = 0; i < n; i++) {
+			for (ll j = 0; j < m; j++) {
+				result[i][j] = fm.addmod(result[i][j], b[i][j]);
+			}
+		}
+		return result;
+	}
+	matrix mulmod(const matrix& a, const matrix& b) {
+		if ((ll)a[0].size() != (ll)b.size()) {
+			return { {} };
+		}
+		matrix result(a.size(), vector<ll>(b[0].size(), 0));
+		for (ll i = 0; i < (ll)a.size(); i++) {
+			for (ll k = 0; k < (ll)a[0].size(); k++) {
+				if (a[i][k]) {
+					for (ll j = 0; j < (ll)b[0].size(); j++) {
+						result[i][j] = fm.addmod(result[i][j], (ll)fm.fastmulmod(a[i][k], b[k][j]));
+					}
+				}
+			}
+		}
+		return result;
+	}
+	matrix mul(const matrix& a, const matrix& b) {
+		if ((ll)a[0].size() != (ll)b.size()) {
+			return { {} };
+		}
+		matrix result(a.size(), vector<ll>(b[0].size(), 0));
+		for (ll i = 0; i < (ll)a.size(); i++) {
+			for (ll k = 0; k < (ll)a[0].size(); k++) {
+				if (a[i][k]) {
+					for (ll j = 0; j < (ll)b[0].size(); j++) {
+						result[i][j] += a[i][k] * b[k][j];
+					}
+				}
+			}
+		}
+		return result;
+	}
+	matrix_u mulmod(const matrix_u& a, const matrix_u& b) {
+		if (a[0].size() != b.size()) {
+			return { {} };
+		}
+		matrix_u result(a.size(), vector<ull>(b[0].size(), 0));
+		for (ll i = 0; i < (ll)a.size(); i++) {
+			for (ll k = 0; k < (ll)a[0].size(); k++) {
+				if (a[i][k]) {
+					for (ll j = 0; j < (ll)b[0].size(); j++) {
+						result[i][j] = fm.addmod(result[i][j], fm.fastmulmod(a[i][k], b[k][j]));
+					}
+				}
+			}
+		}
+		return result;
+	}
+	matrix_u mul(const matrix_u& a, const matrix_u& b) {
+		if (a[0].size() != b.size()) {
+			return { {} };
+		}
+		matrix_u result(a.size(), vector<ull>(b[0].size(), 0));
+		for (ll i = 0; i < (ll)a.size(); i++) {
+			for (ll k = 0; k < (ll)a[0].size(); k++) {
+				if (a[i][k]) {
+					for (ll j = 0; j < (ll)b[0].size(); j++) {
+						result[i][j] += a[i][k] * b[k][j];
+					}
+				}
+			}
+		}
+		return result;
+	}
+	matrix identity(ll n) {
+		matrix result(n, vector<ll>(n, 0));
+		for (ll i = 0; i < n; i++) {
+			result[i][i] = 1;
+		}
+		return result;
+	}
+	matrix powmod(matrix a, ull b) {
+		if (a.size() != a[0].size()) {
+			return { {} };
+		}
+		matrix result = identity((ll)a.size());
+		while (b) {
+			if (b & 1) {
+				result = mulmod(result, a);
+			}
+			a = mulmod(a, a);
+			b >>= 1;
+		}
+		return result;
+	}
+	matrix pow(matrix a, ull b) {
+		if (a.size() != a[0].size()) {
+			return { {} };
+		}
+		matrix result = identity((ll)a.size());
+		while (b) {
+			if (b & 1) {
+				result = mul(result, a);
+			}
+			a = mul(a, a);
+			b >>= 1;
+		}
+		return result;
+	}
+	matrix_u identity(ull n) {
+		matrix_u result(n, vector<ull>(n, 0));
+		for (ull i = 0; i < n; i++) {
+			result[i][i] = 1;
+		}
+		return result;
+	}
+	matrix_u powmod(matrix_u a, ull b) {
+		if (a.size() != a[0].size()) {
+			return { {} };
+		}
+		matrix_u result = identity((ull)a.size());
+		while (b) {
+			if (b & 1) {
+				result = mulmod(result, a);
+			}
+			a = mulmod(a, a);
+			b >>= 1;
+		}
+		return result;
+	}
+	matrix_u pow(matrix_u a, ull b) {
+		if (a.size() != a[0].size()) {
+			return { {} };
+		}
+		matrix_u result = identity((ull)a.size());
+		while (b) {
+			if (b & 1) {
+				result = mul(result, a);
+			}
+			a = mul(a, a);
+			b >>= 1;
+		}
+		return result;
+	}
+};
 //class Primecheck {
 //private:
 //	using ull = unsigned long long;
@@ -489,12 +684,10 @@ private:
 	ll n;
 	vector<vector<pll>>graph;
 public:
-	vector<ll>dist;
-	vector<vector<pll>>revgraph;
 	Dijkstra(ll n, const vector<vector<pll>>& graph) : n(n), graph(graph) {}
 	vector<ll> run(const vector<ll>& start) {
 		priority_queue<pll, vector<pll>, greater<pll>>pq;
-		dist.assign(n + 1, LLONG_MAX);
+		vector<ll>dist(n + 1, LLONG_MAX);
 		for (auto& i : start) {
 			dist[i] = 0;
 			pq.push({ 0, i });
@@ -515,8 +708,8 @@ public:
 	}
 	pair<vector<ll>, vector<vector<pll>>> revrun(const vector<ll>& start) {
 		priority_queue<pll, vector<pll>, greater<pll>>pq;
-		dist.assign(n + 1, LLONG_MAX);
-		revgraph.assign(n + 1, vector<pll>());
+		vector<vector<pll>>revgraph(n + 1);
+		vector<ll>dist(n + 1, LLONG_MAX);
 		for (auto& i : start) {
 			dist[i] = 0;
 			pq.push({ 0, i });
@@ -672,5 +865,72 @@ public:
 			}
 		}
 		return false;
+	}
+};
+class Floydwarshall {
+private:
+	using ll = long long;
+	ll n;
+	vector<vector<ll>>graph;
+public:
+	Floydwarshall(ll n, const vector<vector<ll>>& graph) : n(n), graph(graph) {}
+	vector<vector<ll>> run() {
+		vector<vector<ll>>dist = graph;
+		for (int i = 1; i <= n; i++) {
+			dist[i][i] = 0;
+		}
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				for (int k = 1; k <= n; k++) {
+					if (dist[j][i] != LLONG_MAX && dist[i][k] != LLONG_MAX) {
+						dist[j][k] = min(dist[j][k], dist[j][i] + dist[i][k]);
+					}
+				}
+			}
+		}
+		return dist;
+	}
+	pair<vector<vector<ll>>, vector<vector<ll>>>revrun() {
+		vector<vector<ll>>dist = graph;
+		vector<vector<ll>>next(n + 1, vector<ll>(n + 1, -1));
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				if (graph[i][j] != LLONG_MAX) {
+					next[i][j] = j;
+				}
+			}
+		}
+		for (int i = 1; i <= n; i++) {
+			dist[i][i] = 0;
+			next[i][i] = i;
+		}
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				for (int k = 1; k <= n; k++) {
+					if (dist[j][i] != LLONG_MAX && dist[i][k] != LLONG_MAX) {
+						ll temp = dist[j][i] + dist[i][k];
+						if (temp < dist[j][k]) {
+							dist[j][k] = temp;
+							next[j][k] = next[j][i];
+						}
+					}
+				}
+			}
+		}
+		return { dist, next };
+	}
+	vector<ll> getpath(ll start, ll end, const vector<vector<ll>>& next) {
+		if (next[start][end] == -1) {
+			return {};
+		}
+		vector<ll>path = { start };
+		for (int i = 0; i <= n; i++) {
+			if (start == end) {
+				return path;
+			}
+			start = next[start][end];
+			path.push_back(start);
+		}
+		return {};
 	}
 };
