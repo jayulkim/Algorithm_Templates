@@ -768,11 +768,10 @@ public:
 		return { result.size() == n, result };
 	}
 };
-class Unionfind {
+class Dsu {
 private:
 	using ll = long long;
 	using pll = pair<ll, ll>;
-	using lll = tuple<ll, ll, ll>;
 	ll n;
 	vector<ll>parent;
 	vector<ll>rank;
@@ -782,7 +781,7 @@ public:
 		iota(parent.begin(), parent.end(), 0);
 		rank.assign(n + 1, 1);
 	}
-	Unionfind(ll n) : n(n) {
+	Dsu(ll n) : n(n) {
 		init();
 	}
 	ll getparent(ll x) {
@@ -808,40 +807,13 @@ public:
 			parent[a] = b;
 		}
 	}
-	ll minkruskal(priority_queue<lll, vector<lll>, greater<lll>>& pq) {
-		init();
-		ll result = 0;
-		ll count = 0;
-		while (!pq.empty() && count < n - 1) {
-			auto [a, b, c] = pq.top();
-			pq.pop();
-			if (getparent(b) != getparent(c)) {
-				count++;
-				result += a;
-				merge(b, c);
-			}
-		}
-		return (count == n - 1 ? result : LLONG_MAX);
-	}
-	ll maxkruskal(priority_queue<lll>& pq) {
-		init();
-		ll result = 0;
-		ll count = 0;
-		while (!pq.empty() && count < n - 1) {
-			auto [a, b, c] = pq.top();
-			pq.pop();
-			if (getparent(b) != getparent(c)) {
-				count++;
-				result += a;
-				merge(b, c);
-			}
-		}
-		return (count == n - 1 ? result : LLONG_MAX);
-	}
 	bool hascycle(const vector<vector<ll>>& graph) {
 		init();
 		for (int i = 1; i <= n; i++) {
 			for (auto& j : graph[i]) {
+				if (i == j) {
+					return true;
+				}
 				if (i < j) {
 					if (getparent(i) == getparent(j)) {
 						return true;
@@ -856,6 +828,9 @@ public:
 		init();
 		for (int i = 1; i <= n; i++) {
 			for (auto& j : graph[i]) {
+				if (i == j.first) {
+					return true;
+				}
 				if (i < j.first) {
 					if (getparent(i) == getparent(j.first)) {
 						return true;
@@ -865,6 +840,44 @@ public:
 			}
 		}
 		return false;
+	}
+};
+class Mst {
+private:
+	using ll = long long;
+	using lll = tuple<ll, ll, ll>;
+	ll n;
+public:
+	Mst(ll n) : n(n) {}
+	ll minkruskal(priority_queue<lll, vector<lll>, greater<lll>> pq) {
+		Dsu ds(n);
+		ll result = 0;
+		ll count = 0;
+		while (!pq.empty() && count < n - 1) {
+			auto [a, b, c] = pq.top();
+			pq.pop();
+			if (ds.getparent(b) != ds.getparent(c)) {
+				count++;
+				result += a;
+				ds.merge(b, c);
+			}
+		}
+		return (count == n - 1 ? result : LLONG_MAX);
+	}
+	ll maxkruskal(priority_queue<lll> pq) {
+		Dsu ds(n);
+		ll result = 0;
+		ll count = 0;
+		while (!pq.empty() && count < n - 1) {
+			auto [a, b, c] = pq.top();
+			pq.pop();
+			if (ds.getparent(b) != ds.getparent(c)) {
+				count++;
+				result += a;
+				ds.merge(b, c);
+			}
+		}
+		return (count == n - 1 ? result : LLONG_MAX);
 	}
 };
 class Floydwarshall {
